@@ -44,11 +44,17 @@ Copy `.env.example` to `.env` for local settings.
 - [x] Phase 1: server skeleton, protocol, memory store, mutex, admin auth, contract tests
 - [x] Phase 2: read actions (`getProducts`, `getProduct`, `getOrder`, `getPayments`, `getDelivery`, plus admin reads)
 - [x] Phase 3: `createOrder`, including server-side custom bouquet pricing
-- [ ] Phase 4: M-Pesa STK push and callback
+- [x] Phase 4: M-Pesa STK push and callback, plus the admin writes (`updateOrderStatus`, `restock`, `assignCourier`, `updateDeliveryStatus`)
 - [ ] Phase 5: Google Sheets store
 - [ ] Phase 6: Render deploy and cutover
 
-Actions that haven't been ported yet return `NOT_IMPLEMENTED`.
+Every Apps Script action is ported except `paymentCallback`. `test/protocol.test.js` checks this against `apps-script/Api.js`.
+
+## M-Pesa
+
+- **STK push:** `initiateStkPush` charges the **order's** total to the **order's** phone. The client's `amount` and `phone` are ignored. Each push gets its own payment row, which holds the checkout ID; the ID is never sent to the browser.
+- **Callbacks** arrive at `POST /mpesa/callback/<MPESA_CALLBACK_SECRET>`. Any other path gets a 404. A success is accepted only for the full amount on the payment row, and repeated callbacks are ignored. Daraja always gets an ACK, even if processing fails; the failure is logged.
+- **Configuration** is listed in `.env.example`. Until it's complete, `initiateStkPush` returns `MPESA_NOT_CONFIGURED`, and the server log names the missing settings.
 
 ### Intentional differences from Apps Script
 
@@ -56,7 +62,14 @@ Actions that haven't been ported yet return `NOT_IMPLEMENTED`.
 - `getDelivery` requires `phone`, which must match the order, the same as `getOrder`. `src/js/tracking.js` sends it.
 - Failed `getOrder`/`getDelivery` matches are rate-limited (`RATE_LIMITED`).
 - `listDeliveries`, `getInventory`, `getTransactions`, `adminDashboard` and `adminListOrders` require `token` = `ADMIN_TOKEN`. Apps Script's admin check let everyone in, and some of these actions had no check at all.
-- `getPayments` never returns the M-Pesa checkout ID or the payer's phone.
+- `getPayments` never returns the M-Pesa checkout ID or the payer's phone. A `PAID` payment always sorts first, because `checkout.js` only reads `payments[0]`.
+- M-Pesa:
+  - **Retries fixed.** Every STK push records its checkout ID on its own payment row. Apps Script only recorded it on a `PENDING` row, so a retry after a failed payment could never be confirmed.
+  - **Phone from the order.** The STK push always goes to the order's phone, and is limited to 5 pushes per order per 15 minutes.
+  - **Late failures ignored.** A failure callback for an older push no longer resets a paid order to `FAILED`.
+  - **Callback URL** uses a secret path instead of the web app URL. The request field is spelled `CallBackURL`, as in Safaricom's docs; Apps Script sent `CallbackURL`.
+  - **`AccountReference`** is now `PCB` plus the order number's last six digits. Apps Script used `PCB-YYYYMMDD`, which was the same for every order placed that day.
+- `updateOrderStatus`, `restock`, `assignCourier` and `updateDeliveryStatus` require `token`. Some had no check at all in Apps Script, and the others used its placeholder check that let everyone through.
 - `createOrder`:
   - **Custom bouquets are priced on the server** from the selection (`custom: { flowers, wrapping, ribbon }`), using `src/lib/bouquet.js`. The client's price is ignored. The tables must match `src/js/builder.js`; `test/bouquet.test.js` fails if they drift. Carts saved before this change get `INVALID_ITEM` "Please rebuild your custom bouquet".
   - **Stock is summed per product** before checking. Apps Script checked each line separately, so two lines of one product could oversell.

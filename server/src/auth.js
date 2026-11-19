@@ -14,7 +14,7 @@ export function requireAdmin(ctx) {
 }
 
 // Hash first so the comparison is constant-time regardless of length.
-function safeEqual(a, b) {
+export function safeEqual(a, b) {
   const ha = createHash('sha256').update(a).digest();
   const hb = createHash('sha256').update(b).digest();
   return timingSafeEqual(ha, hb);

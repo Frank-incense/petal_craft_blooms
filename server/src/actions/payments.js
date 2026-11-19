@@ -24,15 +24,20 @@ function rowToPayment(row) {
 }
 
 export const paymentActions = {
-  /** Newest first — checkout.js reads payments[0]. */
+  /**
+   * checkout.js polls this and reads only payments[0], so a PAID payment
+   * sorts first, then newest first. Otherwise a retry's PENDING row would
+   * hide an earlier push that the customer did complete.
+   */
   async getPayments(ctx) {
     const orderNumber = asString(ctx.input.orderNumber).trim();
     if (!orderNumber) throw new ApiError('MISSING_ID', 'Missing order number');
 
+    const paidFirst = (p) => (p.status === 'PAID' ? 1 : 0);
     const payments = (await ctx.store.all(TABLES.PAYMENTS))
       .filter((r) => asString(r.order_id) === orderNumber)
       .map(rowToPayment)
-      .sort((a, b) => timeOf(b.createdAt) - timeOf(a.createdAt));
+      .sort((a, b) => paidFirst(b) - paidFirst(a) || timeOf(b.createdAt) - timeOf(a.createdAt));
 
     return ok(payments, 'Payments retrieved');
   },

@@ -14,13 +14,19 @@ import { actions as defaultActions } from './actions/index.js';
 import { ApiError, successBody, errorBody } from './envelope.js';
 import { createMutex } from './lib/mutex.js';
 import { createRateLimiter } from './lib/rate-limit.js';
+import { createDarajaClient } from './mpesa/daraja.js';
+import { processCallback, ACK } from './mpesa/callback.js';
+import { safeEqual } from './auth.js';
 
-export function createApp({ store, config, actions = defaultActions, lock = createMutex(), now = () => new Date(), logger = console, limiters }) {
+export function createApp({ store, config, actions = defaultActions, lock = createMutex(), now = () => new Date(), logger = console, limiters, mpesa }) {
+  mpesa = mpesa || createDarajaClient({ config, now });
   limiters = limiters || {
     // Failed order-number + phone matches, per client IP.
     orderLookup: createRateLimiter({ max: 10, windowMs: 15 * 60 * 1000, now }),
     // Orders placed, per client IP. Unpaid orders still reserve stock.
     orderCreate: createRateLimiter({ max: 20, windowMs: 60 * 60 * 1000, now }),
+    // STK pushes per order, so an order number can't be used to spam a phone.
+    stkPush: createRateLimiter({ max: 5, windowMs: 15 * 60 * 1000, now }),
   };
 
   const app = express();
@@ -30,6 +36,20 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
   app.use(cors(config.corsOrigins));
 
   app.get('/healthz', (req, res) => res.json({ ok: true }));
+
+  // Daraja STK callbacks. The secret path segment is the only thing that
+  // proves a callback came from the URL we gave Safaricom; anything else
+  // gets a plain 404 and is not processed.
+  app.post('/mpesa/callback/:secret', express.json({ limit: '50kb' }), async (req, res) => {
+    if (!secretMatches(req.params.secret, config.mpesa.callbackSecret)) return res.sendStatus(404);
+    try {
+      await processCallback({ body: req.body, store, lock, now, logger });
+    } catch (err) {
+      // Still ACK: a retry won't fix our bug, and the details are logged.
+      logger.error('[mpesa] callback processing failed', err);
+    }
+    res.json(ACK);
+  });
 
   app.get('/', (req, res) => {
     dispatch(req, req.query.action, { ...req.query }, res);
@@ -60,7 +80,7 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
       const name = String(action);
       if (!Object.hasOwn(actions, name)) throw new ApiError('UNKNOWN_ACTION', 'Unknown action: ' + name);
 
-      const result = await actions[name]({ input, store, lock, config, now, ip: req.ip, limiters, logger });
+      const result = await actions[name]({ input, store, lock, config, now, ip: req.ip, limiters, logger, mpesa });
       res.json(successBody(result));
     } catch (err) {
       if (err instanceof ApiError) {
@@ -74,6 +94,10 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
   }
 
   return app;
+}
+
+function secretMatches(given, expected) {
+  return Boolean(expected) && typeof given === 'string' && safeEqual(given, expected);
 }
 
 function cors(allowed) {

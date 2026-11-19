@@ -6,6 +6,9 @@ import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { makeApp, FIXED_NOW } from './helpers.js';
 import { ApiError, ok } from '../src/envelope.js';
+import { actions } from '../src/actions/index.js';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 describe('GET /?action=', () => {
   it('returns the success envelope', async () => {
@@ -128,10 +131,17 @@ describe('handler results and errors', () => {
     expect(res.body).toEqual({ success: false, error: 'Something went wrong', code: 'UNHANDLED' });
   });
 
-  it('reports actions that are not ported yet as NOT_IMPLEMENTED', async () => {
-    const { app } = makeApp();
-    const res = await request(app).get('/').query({ action: 'initiateStkPush' });
-    expect(res.body.code).toBe('NOT_IMPLEMENTED');
+});
+
+describe('parity with apps-script/Api.js', () => {
+  it('registers every Apps Script action except the removed paymentCallback', () => {
+    const source = readFileSync(fileURLToPath(new URL('../../apps-script/Api.js', import.meta.url)), 'utf8');
+    const routesBlock = source.slice(source.indexOf('const routes = {'), source.indexOf('const handler = routes[action]'));
+    const appsScriptActions = [...routesBlock.matchAll(/^\s{6}(\w+):\s*function/gm)].map((m) => m[1]);
+
+    expect(appsScriptActions.length).toBeGreaterThan(15); // the regex still finds the routes
+    expect(appsScriptActions).not.toContain('paymentCallback');
+    expect(Object.keys(actions).sort()).toEqual([...appsScriptActions].sort());
   });
 });
 
