@@ -1,4 +1,4 @@
-import { GoogleAuth } from 'google-auth-library';
+import { JWT } from 'google-auth-library';
 
 /**
  * Returns getToken() for the Sheets API from a service-account key
@@ -8,15 +8,21 @@ import { GoogleAuth } from 'google-auth-library';
 export function serviceAccountTokenSource(keyText) {
   if (!keyText) throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON is not set');
   const text = keyText.trim().startsWith('{') ? keyText : Buffer.from(keyText, 'base64').toString('utf8');
-  let credentials;
-  try { credentials = JSON.parse(text); } catch { throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON (or base64 JSON)'); }
+  let key;
+  try { key = JSON.parse(text); } catch { throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON (or base64 JSON)'); }
+  if (key.type !== 'service_account' || !key.client_email || !key.private_key) {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON is not a service-account key');
+  }
 
-  const auth = new GoogleAuth({ credentials, scopes: ['https://www.googleapis.com/auth/spreadsheets'] });
-  let client;
+  const client = new JWT({
+    email: key.client_email,
+    key: key.private_key,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+
   return {
-    email: credentials.client_email,
+    email: key.client_email,
     async getToken() {
-      client = client || (await auth.getClient());
       const { token } = await client.getAccessToken();
       if (!token) throw new Error('Could not get a Google access token');
       return token;

@@ -6,11 +6,12 @@
  * come from Settings. Client-supplied prices and totals are ignored.
  *
  * Write order (Sheets has no transactions, so a failure part-way leaves
- * partial data; the order is chosen to keep that harmless):
- *   1. customer          — reusable, harmless if the rest fails
- *   2. order items       — orphaned rows if step 3 fails, never shown
- *   3. order row         — the commit point; from here we report success
- *   4. payment, delivery, inventory — best effort, failures are logged
+ * partial data; the order is chosen to keep that harmless). Steps within
+ * a stage run in parallel — each Sheets call is a few hundred ms.
+ *   1. customer + order items — harmless leftovers if step 2 fails
+ *      (a reusable customer; item rows no order points to)
+ *   2. order row              — the commit point; from here we report success
+ *   3. payment, delivery, inventory — best effort, failures are logged
  *      for staff to fix rather than failing an order that now exists
  */
 
@@ -63,10 +64,11 @@ export const createOrderActions = {
       // Stock is checked under the lock, before anything is written.
       const inventoryPlan = await planInventory(store, items);
 
-      const customer = await findOrCreateCustomer(store, input, nowIso, now);
       const orderNumber = await uniqueOrderNumber(store, now);
 
-      await store.insertMany(TABLES.ORDER_ITEMS, items.map((item) => ({
+      const [customer] = await Promise.all([
+        findOrCreateCustomer(store, input, nowIso, now),
+        store.insertMany(TABLES.ORDER_ITEMS, items.map((item) => ({
         id:               generateId('oi', now),
         order_id:         orderNumber,
         product_id:       item.productId,
@@ -76,7 +78,8 @@ export const createOrderActions = {
         quantity:         item.quantity,
         line_total:       item.lineTotal,
         created_at:       nowIso,
-      })));
+      }))),
+      ]);
 
       await store.insert(TABLES.ORDERS, {
         id:               orderNumber,
@@ -106,15 +109,17 @@ export const createOrderActions = {
         }
       };
 
-      await bestEffort('payment row', () => store.insert(TABLES.PAYMENTS, {
-        id: generateId('pay', now), order_id: orderNumber, amount: total, method: 'MPESA',
-        status: PAYMENT_STATUS.PENDING, created_at: nowIso, updated_at: nowIso,
-      }));
-      await bestEffort('delivery row', () => store.insert(TABLES.DELIVERIES, {
-        id: generateId('del', now), order_id: orderNumber, status: 'UNASSIGNED',
-        recipient_name: input.name, created_at: nowIso, updated_at: nowIso,
-      }));
-      await bestEffort('inventory', () => applyInventory(store, inventoryPlan, orderNumber, nowIso, now));
+      await Promise.all([
+        bestEffort('payment row', () => store.insert(TABLES.PAYMENTS, {
+          id: generateId('pay', now), order_id: orderNumber, amount: total, method: 'MPESA',
+          status: PAYMENT_STATUS.PENDING, created_at: nowIso, updated_at: nowIso,
+        })),
+        bestEffort('delivery row', () => store.insert(TABLES.DELIVERIES, {
+          id: generateId('del', now), order_id: orderNumber, status: 'UNASSIGNED',
+          recipient_name: input.name, created_at: nowIso, updated_at: nowIso,
+        })),
+        bestEffort('inventory', () => applyInventory(store, inventoryPlan, orderNumber, nowIso, now)),
+      ]);
 
       return ok({
         orderNumber,
@@ -256,20 +261,19 @@ async function planInventory(store, items) {
 }
 
 async function applyInventory(store, plan, orderNumber, nowIso, now) {
-  for (const p of plan) {
-    await store.update(TABLES.INVENTORY, p.sku, {
+  if (!plan.length) return;
+  await Promise.all([
+    ...plan.map((p) => store.update(TABLES.INVENTORY, p.sku, {
       current_qty: p.after,
       status: stockStatus(p.after, p.reorderLevel),
       updated_at: nowIso,
-    });
-  }
-  if (plan.length) {
-    await store.insertMany(TABLES.INVENTORY_TRANSACTIONS, plan.map((p) => ({
+    })),
+    store.insertMany(TABLES.INVENTORY_TRANSACTIONS, plan.map((p) => ({
       id: generateId('invtx', now), sku: p.sku, type: 'SALE', quantity_change: -p.qty,
       qty_before: p.before, qty_after: p.after, order_id: orderNumber,
       created_by: 'system', created_at: nowIso,
-    })));
-  }
+    }))),
+  ]);
 }
 
 export function stockStatus(qty, reorderLevel) {
