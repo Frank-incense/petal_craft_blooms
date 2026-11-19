@@ -23,6 +23,12 @@ export function loadConfig(env = process.env) {
       .map((s) => s.trim())
       .filter(Boolean),
     adminToken: env.ADMIN_TOKEN || '',
+    sheets: {
+      spreadsheetId: env.SPREADSHEET_ID || '',
+      // Service-account key: the JSON itself, or base64 of it.
+      serviceAccountJson: env.GOOGLE_SERVICE_ACCOUNT_JSON || '',
+      refreshMs: Number(env.SHEETS_REFRESH_MS) || 30_000,
+    },
     // Public HTTPS origin of this server, used to build the M-Pesa callback URL.
     publicBaseUrl,
     mpesa: {

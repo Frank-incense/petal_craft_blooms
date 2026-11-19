@@ -16,6 +16,7 @@ npm run dev          # http://localhost:3000, restarts on change, reads .env if 
 npm test             # Vitest, uses the in-memory store, no Google credentials needed
 npx vitest run test/protocol.test.js        # one file
 npx vitest run -t "rejects bodies over"     # tests whose name matches
+npm run check:sheets # read-only check of the configured spreadsheet
 ```
 
 Copy `.env.example` to `.env` for local settings.
@@ -26,10 +27,21 @@ Copy `.env.example` to `.env` for local settings.
 |---|---|
 | `src/app.js` | HTTP layer: parses requests, dispatches to actions, handles envelopes and CORS |
 | `src/actions/` | One handler per action. Handlers receive `ctx = { input, store, lock, config, now }`, return data, and throw `ApiError` for expected failures |
-| `src/store/` | Data access. `memory-store.js` is used for tests and local development; the Sheets store implements the same interface |
+| `src/store/` | Data access. `memory-store.js` is for tests and local development; `sheets-store.js` uses Google Sheets. `test/store.test.js` runs one contract against both |
 | `src/schema.js` | Sheet tab names and header columns, copied from `setupSheets()` in the Apps Script code |
 | `src/lib/mutex.js` | Serialises read-check-write sequences, replacing Apps Script's `LockService` |
 | `src/auth.js` | `requireAdmin(ctx)`, which checks `token` against `ADMIN_TOKEN` |
+
+## Google Sheets store
+
+- **Reads** come from an in-memory copy of every tab, loaded in one request at startup and refreshed every `SHEETS_REFRESH_MS` (default 30s). Staff edits appear within that window.
+- **Writes** go to the sheet immediately and update the copy:
+  - Columns are matched by header name, so staff can reorder them or add their own.
+  - Before an update, the server re-reads the header row and key column, so a row staff sorted or inserted can't redirect the write. Only the patched cells are written.
+  - Every value is written `RAW`. Customer text is never run as a formula (Apps Script's `appendRow` would run it), and phone numbers keep their leading 0.
+  - 429 and 5xx responses are retried with backoff, up to 3 times.
+- **Quota:** a service account gets about 60 reads and 60 writes per minute. Reads are served from memory, so only writes count against it. `createOrder` makes about 7 calls.
+- **Setup:** see the Sheets section of `.env.example`. Run `npm run check:sheets` to confirm access.
 
 ## Constraints
 
@@ -45,7 +57,7 @@ Copy `.env.example` to `.env` for local settings.
 - [x] Phase 2: read actions (`getProducts`, `getProduct`, `getOrder`, `getPayments`, `getDelivery`, plus admin reads)
 - [x] Phase 3: `createOrder`, including server-side custom bouquet pricing
 - [x] Phase 4: M-Pesa STK push and callback, plus the admin writes (`updateOrderStatus`, `restock`, `assignCourier`, `updateDeliveryStatus`)
-- [ ] Phase 5: Google Sheets store
+- [~] Phase 5: Google Sheets store. The code and tests are done (against a fake Sheets API); it still needs a run against a copy of the real spreadsheet and a Daraja sandbox payment.
 - [ ] Phase 6: Render deploy and cutover
 
 Every Apps Script action is ported except `paymentCallback`. `test/protocol.test.js` checks this against `apps-script/Api.js`.

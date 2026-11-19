@@ -10,10 +10,12 @@
     "dev": "node --watch --env-file-if-exists=.env src/index.js",
     "start": "node src/index.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:sheets": "node --env-file-if-exists=.env scripts/check-sheets.js"
   },
   "dependencies": {
-    "express": "^5.3.0"
+    "express": "^5.3.0",
+    "google-auth-library": "^11.3.4"
   },
   "devDependencies": {
     "supertest": "^7.3.2",
