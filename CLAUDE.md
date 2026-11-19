@@ -18,6 +18,10 @@ npm run preview    # Serve dist/
 
 The API server in `server/` is a separate package. Run its commands from `server/`: `npm run dev`, `npm test`, or `npx vitest run test/<file>` for a single file. See `server/README.md`.
 
+`vite.config.js` copies `src/views/` into `dist/` at build time. The router fetches those fragments while the site runs, so they aren't part of the bundle. All `<script>` tags in `index.html` must be `type="module"`, or Vite leaves them out of the build.
+
+Deployment is described in `render.yaml` (a Render Blueprint): the API in `server/` runs as a web service, and the storefront as a static site.
+
 Tailwind is **not** wired into Vite. `index.html` links the prebuilt `src/output.css` directly. After adding or changing Tailwind classes, run `dev:css` or `build:css`, or the new classes won't exist. Do not hand-edit `output.css`.
 
 ## Architecture
@@ -46,7 +50,7 @@ Every JS file is an IIFE that publishes a global on `window` and talks to other 
 Events: `petal:view-loaded`, `petal:cart-updated`, `petal:wholesale-cart-updated`, `petal:products-loading`, `petal:products-loaded`.
 
 ### Backend (Google Apps Script)
-- The base URL comes from `<meta name="petal-api-url">` in `index.html`, or from `window.PETAL_API_URL` if that is set.
+- The base URL comes from `<meta name="petal-api-url" content="%VITE_API_URL%">` in `index.html`. Vite fills it in from `VITE_API_URL`, which is set in `.env.development` and `.env.production`. Both still point at Apps Script until cutover. To use another API locally, set it in `.env.development.local` (git-ignored). `window.PETAL_API_URL`, if set, takes precedence.
 - Responses use the envelope `{ success, data, error, code }`. `PetalApi` unwraps `data` or throws an `Error` with a `.code`.
 - **POST requests must not set any headers**, including `Content-Type`. Any custom header triggers a CORS preflight, and Apps Script can't answer it. See the header comment in `api.js`.
 - Actions in use: `getProducts`, `createOrder`, `initiateStkPush`, `getPayments` (polled during M-Pesa payment), `getOrder`, `getDelivery`.
@@ -70,6 +74,5 @@ Events: `petal:view-loaded`, `petal:cart-updated`, `petal:wholesale-cart-updated
 - `hover:` and `group-hover:` are redefined in `style.css` so they also match a `.hover-active` class. `app.js` (`initHoverPolyfill`) adds that class on mouseover, for environments where Chrome won't fire native `:hover`. Keep this in mind when debugging hover styles.
 
 ## Known rough edges (verify before relying on them)
-- `index.html` loads `wholesale-catalogue.js` twice (once as a module, once as a classic script). It also references `src/js/wholesale-catalog.js`, which doesn't exist.
 - In `products.js`, `FALLBACK_PRODUCTS` is commented out but still referenced. If the API is unconfigured or fails, that path throws a `ReferenceError`.
 - `app.js` `hashToViewPath` prefetches `views/<route>.html`, but the router fetches `./src/views/<route>.html`, so the prefetch misses.
