@@ -4,9 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Petal Craft Blooms — Premium Florist</title>
-    <!-- Paste your Apps Script Web app URL between the quotes. -->
-    <!-- Leave empty to use the local fallback catalogue. -->
-    <meta name="petal-api-url" content="https://script.google.com/macros/s/AKfycbzcT2wXDcpsb5ge3ufe3f6VzKGPhNutl8ZNJwZAso4eXUwInvRH0YgCoGx9JGyIjwdCbQ/exec" />
+    <!-- API base URL, filled in by Vite from VITE_API_URL (.env.development / .env.production). -->
+    <meta name="petal-api-url" content="%VITE_API_URL%" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="./src/output.css"/>
@@ -144,8 +143,6 @@
     <script type="module" src="./src/js/tracking.js"></script>
     <script type="module" src="./src/js/wholesale_catalog.js"></script>
     <script type="module" src="./src/js/wholesale-catalogue.js"></script>
-    <script src="./src/js/wholesale-catalog.js"></script>
-    <script src="./src/js/wholesale-cart.js"></script>
-    <script src="./src/js/wholesale-catalogue.js"></script>
+    <script type="module" src="./src/js/wholesale-cart.js"></script>
 </body>
 </html>

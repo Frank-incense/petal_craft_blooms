@@ -13,7 +13,8 @@ export function loadConfig(env = process.env) {
     throw new Error(`MPESA_ENVIRONMENT must be "sandbox" or "production", got "${mpesaEnv}"`);
   }
 
-  const publicBaseUrl = (env.PUBLIC_BASE_URL || '').replace(/\/+$/, '');
+  // Render provides RENDER_EXTERNAL_URL (https://<service>.onrender.com).
+  const publicBaseUrl = (env.PUBLIC_BASE_URL || env.RENDER_EXTERNAL_URL || '').replace(/\/+$/, '');
 
   return {
     port: Number(env.PORT) || 3000,

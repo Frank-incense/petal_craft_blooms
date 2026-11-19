@@ -25,6 +25,16 @@ async function createStore() {
 const store = await createStore();
 const app = createApp({ store, config });
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   console.log(`[server] listening on http://localhost:${config.port} (store: ${config.dataStore})`);
+});
+
+// Render sends SIGTERM before replacing the instance on each deploy.
+// Stop accepting connections and let in-flight requests (an order being
+// written to the sheet, a payment callback) finish first.
+process.on('SIGTERM', () => {
+  console.log('[server] SIGTERM: finishing in-flight requests');
+  store.stop?.();
+  server.close(() => process.exit(0));
+  setTimeout(() => process.exit(0), 25_000).unref();
 });
