@@ -2,7 +2,7 @@
  * Action table: ?action=<name> → handler(ctx).
  *
  * A handler returns its data (or ok(data, message)) and throws ApiError
- * for expected failures. ctx = { input, store, lock, config, now, ip, limiters }.
+ * for expected failures. ctx = { input, store, lock, config, now, ip, limiters, logger }.
  * `input` merges the query string with the JSON body (body wins),
  * matching Apps Script's `body.x || params.x`.
  */
@@ -14,11 +14,13 @@ import { paymentActions } from './payments.js';
 import { deliveryActions } from './deliveries.js';
 import { inventoryActions } from './inventory.js';
 import { adminActions } from './admin.js';
+import { createOrderActions } from './create-order.js';
 
-// Apps Script actions still to port (phases 3–4). `paymentCallback` was
-// removed in the v9 hotfix and is not coming back.
+// Apps Script actions still to port in phase 4: M-Pesa, plus the admin
+// writes (order status, restock, courier). `paymentCallback` was removed
+// in the v9 hotfix and is not coming back.
 const NOT_YET_PORTED = [
-  'createOrder', 'updateOrderStatus', 'restock',
+  'updateOrderStatus', 'restock',
   'initiateStkPush', 'assignCourier', 'updateDeliveryStatus',
 ];
 
@@ -34,6 +36,7 @@ export const actions = {
   ...deliveryActions,
   ...inventoryActions,
   ...adminActions,
+  ...createOrderActions,
 
   ping: (ctx) => ({ pong: true, time: ctx.now().toISOString() }),
 };

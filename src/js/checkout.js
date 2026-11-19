@@ -303,6 +303,7 @@
                     unitPrice: item.unitPrice,
                     name:      item.name,
                     subtitle:  item.subtitle || "",
+                    custom:    item.custom,
                 };
             }),
         };

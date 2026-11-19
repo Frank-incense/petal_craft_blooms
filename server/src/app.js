@@ -19,6 +19,8 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
   limiters = limiters || {
     // Failed order-number + phone matches, per client IP.
     orderLookup: createRateLimiter({ max: 10, windowMs: 15 * 60 * 1000, now }),
+    // Orders placed, per client IP. Unpaid orders still reserve stock.
+    orderCreate: createRateLimiter({ max: 20, windowMs: 60 * 60 * 1000, now }),
   };
 
   const app = express();
@@ -58,7 +60,7 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
       const name = String(action);
       if (!Object.hasOwn(actions, name)) throw new ApiError('UNKNOWN_ACTION', 'Unknown action: ' + name);
 
-      const result = await actions[name]({ input, store, lock, config, now, ip: req.ip, limiters });
+      const result = await actions[name]({ input, store, lock, config, now, ip: req.ip, limiters, logger });
       res.json(successBody(result));
     } catch (err) {
       if (err instanceof ApiError) {

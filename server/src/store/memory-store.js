@@ -6,6 +6,7 @@
  *   all(table)                        → Promise<row[]>        (copies)
  *   find(table, predicate)            → Promise<row | null>
  *   insert(table, row)                → Promise<row>
+ *   insertMany(table, rows)           → Promise<row[]>
  *   update(table, keyValue, patch)    → Promise<row | null>   (patch only)
  *
  * Rows are plain objects keyed by the table's header names. `update`
@@ -41,6 +42,13 @@ export function createMemoryStore(seed = {}) {
       const shaped = shape(table, row);
       rowsOf(table).push(shaped);
       return { ...shaped };
+    },
+
+    /** One write for several rows (a single append call on Sheets). */
+    async insertMany(table, rows) {
+      const shaped = rows.map((row) => shape(table, row));
+      rowsOf(table).push(...shaped);
+      return shaped.map((row) => ({ ...row }));
     },
 
     async update(table, keyValue, patch) {

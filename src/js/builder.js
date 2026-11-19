@@ -314,6 +314,13 @@
             subtitle: buildSubtitle(),
             image: pickHeroImage(),
             price: grandTotal(),
+            // The server re-prices the bouquet from this selection;
+            // `price` above is only for display in the cart.
+            custom: {
+                flowers: Object.assign({}, state.flowers),
+                wrapping: state.wrapping,
+                ribbon: state.ribbon,
+            },
         };
 
         window.PetalCart.addItem(product, 1);

@@ -13,3 +13,19 @@ export function makeApp({ seed, env = {}, ...overrides } = {}) {
   const app = createApp({ store, config, now: () => FIXED_NOW, logger: silentLogger, ...overrides });
   return { app, store, config };
 }
+
+/**
+ * Wraps a store so every call waits a few ms, like a network round trip.
+ * Without this, memory-store calls resolve instantly and concurrent
+ * requests never interleave, so race-condition tests prove nothing.
+ */
+export function withLatency(store, ms = 5) {
+  const wrapped = {};
+  for (const [name, fn] of Object.entries(store)) {
+    wrapped[name] = async (...args) => {
+      await new Promise((r) => setTimeout(r, ms));
+      return fn(...args);
+    };
+  }
+  return wrapped;
+}

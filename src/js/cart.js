@@ -110,7 +110,7 @@
             if (existing) {
                 existing.quantity = Math.min(MAX_QTY, existing.quantity + quantity);
             } else {
-                items.push({
+                const line = {
                     productId: product.id,
                     name: product.name,
                     subtitle: product.subtitle || "",
@@ -118,7 +118,9 @@
                     quantity: quantity,
                     unitPrice: product.price,
                     addedAt: Date.now(),
-                });
+                };
+                if (product.custom) line.custom = product.custom;
+                items.push(line);
             }
             writeCart(items);
             showToast("Added to cart — " + product.name);
