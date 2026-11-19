@@ -13,8 +13,14 @@ import express from 'express';
 import { actions as defaultActions } from './actions/index.js';
 import { ApiError, successBody, errorBody } from './envelope.js';
 import { createMutex } from './lib/mutex.js';
+import { createRateLimiter } from './lib/rate-limit.js';
 
-export function createApp({ store, config, actions = defaultActions, lock = createMutex(), now = () => new Date(), logger = console }) {
+export function createApp({ store, config, actions = defaultActions, lock = createMutex(), now = () => new Date(), logger = console, limiters }) {
+  limiters = limiters || {
+    // Failed order-number + phone matches, per client IP.
+    orderLookup: createRateLimiter({ max: 10, windowMs: 15 * 60 * 1000, now }),
+  };
+
   const app = express();
   app.disable('x-powered-by');
   app.set('trust proxy', 1); // Render terminates TLS in front of us
@@ -24,7 +30,7 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
   app.get('/healthz', (req, res) => res.json({ ok: true }));
 
   app.get('/', (req, res) => {
-    dispatch(req.query.action, { ...req.query }, res);
+    dispatch(req, req.query.action, { ...req.query }, res);
   });
 
   app.post('/', express.text({ type: () => true, limit: '100kb' }), (req, res) => {
@@ -35,7 +41,7 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) body = parsed;
       } catch { /* malformed JSON → empty body, as Apps Script did */ }
     }
-    dispatch(body.action || req.query.action, { ...req.query, ...body }, res);
+    dispatch(req, body.action || req.query.action, { ...req.query, ...body }, res);
   });
 
   // Body-parser failures (oversized or unreadable bodies).
@@ -46,13 +52,13 @@ export function createApp({ store, config, actions = defaultActions, lock = crea
     res.status(status).json(errorBody(status === 413 ? 'Request body too large' : 'Invalid request', 'INVALID_REQUEST'));
   });
 
-  async function dispatch(action, input, res) {
+  async function dispatch(req, action, input, res) {
     try {
       if (!action) throw new ApiError('MISSING_ACTION', 'Missing action parameter');
       const name = String(action);
       if (!Object.hasOwn(actions, name)) throw new ApiError('UNKNOWN_ACTION', 'Unknown action: ' + name);
 
-      const result = await actions[name]({ input, store, lock, config, now });
+      const result = await actions[name]({ input, store, lock, config, now, ip: req.ip, limiters });
       res.json(successBody(result));
     } catch (err) {
       if (err instanceof ApiError) {

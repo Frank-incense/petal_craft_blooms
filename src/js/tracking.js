@@ -288,6 +288,8 @@
                 return "We couldn't find an order with those details. Please double-check the order number and phone number.";
             case "MISSING_ID":
                 return "Please enter both your order number and phone number.";
+            case "RATE_LIMITED":
+                return "Too many lookup attempts. Please wait a few minutes and try again.";
             default:
                 return "Something went wrong looking up your order. Please try again.";
         }
@@ -305,6 +307,7 @@
         try {
             delivery = await window.PetalApi.call("getDelivery", {
                 orderNumber: orderNumber,
+                phone: phone,
             });
         } catch (err) {
             // Delivery not found is fine — no courier has been assigned yet

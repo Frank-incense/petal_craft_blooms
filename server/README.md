@@ -35,15 +35,25 @@ Copy `.env.example` to `.env` for local settings.
 
 - **Single instance only.** The mutex and the planned in-memory cache of the sheet are per process. Do not scale horizontally.
 - **`store.update` patches only the given cells.** Staff edit the sheet directly, so whole-row rewrites could overwrite their changes.
+- **Client IPs come from Render's proxy** (`trust proxy` = 1). The `getOrder`/`getDelivery` rate limit (10 failed matches per IP per 15 minutes) depends on that. Without a proxy in front, `X-Forwarded-For` could be spoofed.
 - **Never return internal error text.** Unexpected exceptions are logged and returned to the client as `UNHANDLED` / "Something went wrong".
 
 ## Migration status
 
 - [x] Phase 1: server skeleton, protocol, memory store, mutex, admin auth, contract tests
-- [ ] Phase 2: read actions (products, orders, deliveries, payments, settings)
+- [x] Phase 2: read actions (`getProducts`, `getProduct`, `getOrder`, `getPayments`, `getDelivery`, plus admin reads)
 - [ ] Phase 3: `createOrder`, including server-side custom bouquet pricing
 - [ ] Phase 4: M-Pesa STK push and callback
 - [ ] Phase 5: Google Sheets store
 - [ ] Phase 6: Render deploy and cutover
 
 Actions that haven't been ported yet return `NOT_IMPLEMENTED`.
+
+### Intentional differences from Apps Script
+
+- `paymentCallback` doesn't exist (it was removed in the v9 hotfix).
+- `getDelivery` requires `phone`, which must match the order, the same as `getOrder`. `src/js/tracking.js` sends it.
+- Failed `getOrder`/`getDelivery` matches are rate-limited (`RATE_LIMITED`).
+- `listDeliveries`, `getInventory`, `getTransactions`, `adminDashboard` and `adminListOrders` require `token` = `ADMIN_TOKEN`. Apps Script's admin check let everyone in, and some of these actions had no check at all.
+- `getPayments` never returns the M-Pesa checkout ID or the payer's phone.
+- The `adminDashboard` "today" count uses the Nairobi date. Apps Script compared UTC dates, so orders placed between 00:00 and 03:00 EAT were counted as the previous day.

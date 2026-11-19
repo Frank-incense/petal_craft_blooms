@@ -130,7 +130,7 @@ describe('handler results and errors', () => {
 
   it('reports actions that are not ported yet as NOT_IMPLEMENTED', async () => {
     const { app } = makeApp();
-    const res = await request(app).get('/').query({ action: 'getProducts' });
+    const res = await request(app).get('/').query({ action: 'createOrder' });
     expect(res.body.code).toBe('NOT_IMPLEMENTED');
   });
 });
