@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petal Craft Blooms — Premium Florist</title>
+    <!-- Paste your Apps Script Web app URL between the quotes. -->
+    <!-- Leave empty to use the local fallback catalogue. -->
+    <meta name="petal-api-url" content="https://script.google.com/macros/s/AKfycbzcT2wXDcpsb5ge3ufe3f6VzKGPhNutl8ZNJwZAso4eXUwInvRH0YgCoGx9JGyIjwdCbQ/exec" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="./src/output.css"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
+    <style>
+        body { font-family: "Inter", sans-serif; background-color: #fffff7; }
+        .font-display { font-family: "Playfair Display", serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fdf6ec; }
+        ::-webkit-scrollbar-thumb { background: #9caf88; border-radius: 3px; }
+        .hero-overlay {
+            background: linear-gradient(
+                to bottom,
+                rgba(45, 74, 62, 0.55),
+                rgba(45, 74, 62, 0.35) 40%,
+                rgba(45, 74, 62, 0.65)
+            );
+        }
+    </style>
+</head>
+<body class="bg-ivory text-charcoal antialiased">
+
+    <!-- ==================== PERSISTENT NAVIGATION ==================== -->
+    <header id="navbar" class="sticky top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm shadow-sm transition-shadow duration-300">
+        <nav class="max-w-container mx-auto flex items-center justify-between px-5 sm:px-8 lg:px-12 py-4">
+            <a href="#/" class="flex items-center gap-2 select-none">
+                <span class="text-2xl font-display font-semibold text-forest tracking-tight">
+                    Petal Craft Blooms
+                </span>
+            </a>
+
+            <ul class="hidden lg:flex items-center gap-8 text-sm font-medium text-stone">
+                <li><a href="#/"           data-nav-route="/"         class="text-forest font-semibold">Home</a></li>
+                <li><a href="#/shop"       data-nav-route="/shop"     class="hover:text-forest transition-colors">Shop</a></li>
+                <li><a href="#/builder"    data-nav-route="/builder"  class="hover:text-forest transition-colors">Build</a></li>
+                <li><a href="#/occasions"  class="hover:text-forest transition-colors">Occasions</a></li>
+                <li><a href="#/about"      class="hover:text-forest transition-colors">About</a></li>
+                <li><a href="#/reviews"    class="hover:text-forest transition-colors">Reviews</a></li>
+                <li><a href="#/wholesale" data-nav-route="/wholesale" class="block py-1 hover:text-forest transition-colors">Export</a></li>
+            </ul>
+
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="#" data-cart-open class="hidden sm:inline-flex text-sm font-medium text-stone hover:text-forest transition-colors">
+                    Cart <span id="cart-badge" class="ml-1 bg-sage text-forest text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                </a>
+                <script>
+                    (function () {
+                        try {
+                            var raw = localStorage.getItem("petal_craft_cart");
+                            var cart = raw ? JSON.parse(raw) : [];
+                            var count = Array.isArray(cart)
+                                ? cart.reduce(function (s, i) { return s + (i.quantity || 0); }, 0)
+                                : 0;
+                            document.getElementById("cart-badge").textContent = count;
+                        } catch (e) { /* leave as 0 */ }
+                    })();
+                </script>
+                <button id="mobile-menu-btn" class="lg:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+                    <span class="w-5 h-0.5 bg-forest rounded"></span>
+                    <span class="w-5 h-0.5 bg-forest rounded"></span>
+                    <span class="w-5 h-0.5 bg-forest rounded"></span>
+                </button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-cream border-t border-beige px-5 py-4">
+            <ul class="lg:hidden flex flex-col gap-1.5 p-2">
+                <li><a href="#/"           data-nav-route="/"         class="text-forest font-semibold">Home</a></li>
+                <li><a href="#/shop"       data-nav-route="/shop"     class="hover:text-forest transition-colors">Shop</a></li>
+                <li><a href="#/builder"    data-nav-route="/builder"  class="hover:text-forest transition-colors">Build</a></li>
+                <li><a href="#/occasions"  class="hover:text-forest transition-colors">Occasions</a></li>
+                <li><a href="#/about"      class="hover:text-forest transition-colors">About</a></li>
+                <li><a href="#/reviews"    class="hover:text-forest transition-colors">Reviews</a></li>
+                <li><a href="#/wholesale"  data-nav-route="/wholesale" class="hover:text-forest transition-colors">Export</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ==================== VIEW CONTAINER ==================== -->
+    <main id="view" class="min-h-[60vh]">
+        <!-- Filled by router.js with the current view's HTML -->
+    </main>
+
+    <!-- ==================== PERSISTENT FOOTER ==================== -->
+    <footer class="bg-charcoal text-cream/80 py-14 px-5 sm:px-8 lg:px-12 mt-10">
+        <div class="max-w-container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div>
+                <h3 class="font-display text-xl font-medium text-ivory mb-4">Petal Craft Blooms</h3>
+                <p class="text-sm font-light leading-relaxed">
+                    Premium florist in Nairobi. Fresh flowers, thoughtfully arranged, delivered with care.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-ivory mb-4 uppercase tracking-wider">Shop</h4>
+                <ul class="space-y-2 text-sm font-light">
+                    <li><a href="#/shop"      class="hover:text-sage-light transition-colors">All Flowers</a></li>
+                    <li><a href="#/builder"   class="hover:text-sage-light transition-colors">Build Bouquet</a></li>
+                    <li><a href="#/occasions" class="hover:text-sage-light transition-colors">By Occasion</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-ivory mb-4 uppercase tracking-wider">Support</h4>
+                <ul class="space-y-2 text-sm font-light">
+                                        <li><a href="#/track" class="hover:text-sage-light transition-colors">Track Order</a></li>
+                    <li><a href="#" class="hover:text-sage-light transition-colors">Delivery Info</a></li>
+                    <li><a href="#" class="hover:text-sage-light transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-sm font-medium text-ivory mb-4 uppercase tracking-wider">Contact</h4>
+                <ul class="space-y-2 text-sm font-light">
+                    <li>📍 Nairobi, Kenya</li>
+                    <li>📞 +254 710 191 260 </li>
+                    <li>✉️ hello@petalcraftblooms.co.ke</li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-container mx-auto mt-10 pt-6 border-t border-cream/10 text-center text-xs font-light text-cream/50">
+            © 2025 Petal Craft Blooms. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script type="module" src="./src/js/api.js"></script>
+    <script type="module" src="./src/js/cart.js"></script>
+    <script type="module" src="./src/js/products.js"></script>
+    <script type="module" src="./src/js/router.js"></script>
+    <script type="module" src="./src/js/app.js"></script>
+    <script type="module" src="./src/js/builder.js"></script>
+    <script type="module" src="./src/js/checkout.js"></script>
+    <script type="module" src="./src/js/tracking.js"></script>
+    <script type="module" src="./src/js/wholesale_catalog.js"></script>
+    <script type="module" src="./src/js/wholesale-catalogue.js"></script>
+    <script src="./src/js/wholesale-catalog.js"></script>
+    <script src="./src/js/wholesale-cart.js"></script>
+    <script src="./src/js/wholesale-catalogue.js"></script>
+</body>
+</html>

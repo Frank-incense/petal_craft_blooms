@@ -1,0 +1,107 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14 text-center">
+        <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-3">Design Your Own</p>
+        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-forest mb-3">
+            Build Your Bouquet
+        </h1>
+        <p class="text-stone max-w-xl mx-auto text-sm sm:text-base font-light">
+            Pick your flowers, choose wrapping and ribbon, add a personal message.
+            Our florists will craft it fresh — one stem at a time.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== MAIN LAYOUT ==================== -->
+<main class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+        <!-- ========== CONFIGURATOR ========== -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- STEP 1 — FLOWERS -->
+            <section class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">1</div>
+                    <div>
+                        <h2 class="font-display text-xl font-medium text-forest leading-tight">Choose Your Flowers</h2>
+                        <p class="text-stone text-xs mt-0.5">Minimum 5 stems · max 30 per variety</p>
+                    </div>
+                </div>
+                <div id="flower-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+            </section>
+
+            <!-- STEP 2 — WRAPPING -->
+            <section class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">2</div>
+                    <div>
+                        <h2 class="font-display text-xl font-medium text-forest leading-tight">Wrapping Style</h2>
+                        <p class="text-stone text-xs mt-0.5">How we tie the bouquet together</p>
+                    </div>
+                </div>
+                <div id="wrapping-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            </section>
+
+            <!-- STEP 3 — RIBBON -->
+            <section class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">3</div>
+                    <div>
+                        <h2 class="font-display text-xl font-medium text-forest leading-tight">Ribbon</h2>
+                        <p class="text-stone text-xs mt-0.5">Finished with a hand-tied bow</p>
+                    </div>
+                </div>
+                <div id="ribbon-grid" class="grid grid-cols-3 sm:grid-cols-5 gap-3"></div>
+            </section>
+
+            <!-- STEP 4 — GIFT MESSAGE -->
+            <section class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">4</div>
+                    <div>
+                        <h2 class="font-display text-xl font-medium text-forest leading-tight">Gift Message</h2>
+                        <p class="text-stone text-xs mt-0.5">Optional · handwritten on a card</p>
+                    </div>
+                </div>
+                <textarea
+                    id="gift-message"
+                    rows="3"
+                    maxlength="200"
+                    placeholder="Happy Birthday, Sarah — wishing you a day as beautiful as you are…"
+                    class="w-full px-4 py-3 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors resize-none font-light"
+                ></textarea>
+                <p class="text-right text-[11px] text-stone mt-2">
+                    <span id="char-count">0</span> / 200
+                </p>
+            </section>
+        </div>
+
+        <!-- ========== SUMMARY ========== -->
+        <aside class="lg:col-span-1">
+            <div class="lg:sticky lg:top-24 bg-cream/70 border border-beige/60 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-display text-xl font-medium text-forest">Your Bouquet</h2>
+                    <button id="reset-btn" type="button" class="text-[11px] uppercase tracking-wider text-stone hover:text-rose transition-colors">Reset</button>
+                </div>
+
+                <div id="summary-content" class="space-y-2.5 pb-4 mb-4 border-b border-beige"></div>
+
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm font-medium text-forest">Total</span>
+                    <span id="summary-total" class="font-display text-2xl font-semibold text-forest">KES 0</span>
+                </div>
+
+                <button
+                    id="add-to-cart-btn"
+                    type="button"
+                    disabled
+                    class="w-full py-3.5 bg-forest text-ivory font-medium text-sm rounded-md hover:bg-forest-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                    Add to Cart
+                </button>
+                <p id="summary-hint" class="text-[11px] text-stone text-center mt-3"></p>
+            </div>
+        </aside>
+    </div>
+</main>

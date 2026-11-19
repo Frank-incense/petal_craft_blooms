@@ -1,0 +1,76 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14 text-center">
+        <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-3">The Full Collection</p>
+        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-forest mb-3">
+            Shop All Flowers
+        </h1>
+        <p class="text-stone max-w-xl mx-auto text-sm sm:text-base font-light">
+            Fresh, seasonal arrangements crafted daily in Nairobi. Filter by category, occasion, or price.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== FILTERS ==================== -->
+<section class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 pt-8 sm:pt-10">
+    <div class="bg-white border border-beige/60 rounded-xl p-4 sm:p-5 shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div class="md:col-span-5">
+                <label for="filter-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-stone">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                    </span>
+                    <input
+                        id="filter-search"
+                        type="text"
+                        placeholder="Search flowers, occasions…"
+                        class="w-full pl-9 pr-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/60 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors"
+                    />
+                </div>
+            </div>
+            <div class="md:col-span-2">
+                <label for="filter-category" class="sr-only">Category</label>
+                <select id="filter-category" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="all">All Categories</option>
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <label for="filter-occasion" class="sr-only">Occasion</label>
+                <select id="filter-occasion" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="all">All Occasions</option>
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <label for="filter-sort" class="sr-only">Sort</label>
+                <select id="filter-sort" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="featured">Featured</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="name">Name (A–Z)</option>
+                </select>
+            </div>
+            <div class="md:col-span-1 flex">
+                <button
+                    id="filter-clear"
+                    class="w-full md:w-auto md:h-full px-3 py-2.5 text-xs font-medium text-stone border border-beige rounded-md hover:bg-cream hover:text-forest transition-colors"
+                    title="Clear filters"
+                >
+                    Clear
+                </button>
+            </div>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-beige/60">
+            <p id="shop-count" class="text-xs text-stone">Loading…</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== PRODUCT GRID ==================== -->
+<section class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+    <div
+        id="shop-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
+    ></div>
+</section>

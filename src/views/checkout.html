@@ -1,0 +1,306 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 text-center">
+        <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-3">Almost There</p>
+        <h1 class="font-display text-3xl sm:text-4xl font-medium text-forest mb-3">Checkout</h1>
+        <p class="text-stone max-w-md mx-auto text-sm font-light">
+            No account needed. We'll just need your delivery details.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== EMPTY STATE ==================== -->
+<section id="checkout-empty" class="hidden">
+    <div class="max-w-md mx-auto text-center px-5 py-24">
+        <div class="w-20 h-20 rounded-full bg-cream flex items-center justify-center mx-auto mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+        </div>
+        <h2 class="font-display text-2xl font-medium text-forest mb-2">Your cart is empty</h2>
+        <p class="text-stone text-sm mb-7">Add some beautiful flowers before you check out.</p>
+        <a href="#/shop" class="inline-flex items-center justify-center px-6 py-3 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors">
+            Shop Flowers
+        </a>
+    </div>
+</section>
+
+<!-- ==================== SUCCESS STATE ==================== -->
+<section id="checkout-success" class="hidden">
+    <div class="max-w-lg mx-auto text-center px-5 py-20">
+        <div class="w-16 h-16 rounded-full bg-sage/25 flex items-center justify-center mx-auto mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-forest">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>
+        <h2 class="font-display text-3xl font-medium text-forest mb-2">Order received</h2>
+        <p class="text-stone text-sm mb-8">
+            Thank you, <span id="success-name" class="font-medium text-forest">friend</span>.
+            We'll call you shortly to confirm your order.
+        </p>
+
+        <div class="bg-cream/70 border border-beige rounded-2xl p-6 mb-6 inline-block min-w-[280px]">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Order Number</p>
+            <p id="success-order-number" class="font-display text-2xl font-semibold text-forest mb-5">—</p>
+
+            <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Total</p>
+            <p id="success-total" class="font-display text-xl font-semibold text-forest">—</p>
+        </div>
+
+        <p class="text-xs text-stone mb-8 max-w-sm mx-auto">
+            Please save this number. We'll call you shortly to confirm payment and delivery details.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+            <a href="#/track" class="inline-flex items-center justify-center px-6 py-3 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors">
+                Track This Order
+            </a>
+            <a href="#/shop" class="inline-flex items-center justify-center px-6 py-3 border border-forest text-forest text-sm font-medium rounded-md hover:bg-forest hover:text-ivory transition-colors">
+                Continue Shopping
+            </a>
+            <a href="#/" class="inline-flex items-center justify-center px-6 py-3 border border-beige text-stone text-sm font-medium rounded-md hover:bg-cream hover:text-forest transition-colors">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== PAYING STATE ==================== -->
+<section id="checkout-paying" class="hidden">
+    <div class="max-w-lg mx-auto text-center px-5 py-16">
+        <div class="w-16 h-16 rounded-full bg-sage/20 flex items-center justify-center mx-auto mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-forest">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+        </div>
+        <h2 class="font-display text-3xl font-medium text-forest mb-2">Check your phone</h2>
+        <p class="text-stone text-sm mb-8 max-w-sm mx-auto">
+            We've sent an M-Pesa prompt to <strong id="paying-phone" class="text-forest">—</strong>.
+            Enter your PIN to complete payment of <strong id="paying-amount" class="text-forest">—</strong>.
+        </p>
+
+        <div class="inline-flex items-center gap-2 text-xs text-stone mb-6">
+            <span class="inline-block w-3 h-3 border-2 border-beige border-t-sage rounded-full animate-spin"></span>
+            <span>Waiting for confirmation…</span>
+        </div>
+
+        <div class="bg-cream/70 border border-beige rounded-xl p-4 mb-6 inline-block">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Order</p>
+            <p id="paying-order" class="font-mono text-sm text-forest">—</p>
+        </div>
+
+        <p class="text-xs text-stone max-w-xs mx-auto">
+            Didn't get the prompt? Make sure your phone has signal.
+            The prompt will time out on its own.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== PAYMENT FAILED / TIMEOUT STATE ==================== -->
+<section id="checkout-payment-failed" class="hidden">
+    <div class="max-w-md mx-auto text-center px-5 py-20">
+        <div class="w-16 h-16 rounded-full bg-rose/15 flex items-center justify-center mx-auto mb-5">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-dark">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        <h2 class="font-display text-3xl font-medium text-forest mb-2">Payment not completed</h2>
+        <p id="failed-message" class="text-stone text-sm mb-8 max-w-sm mx-auto">
+            The M-Pesa prompt wasn't confirmed.
+        </p>
+
+        <div class="bg-cream/70 border border-beige rounded-xl p-5 mb-6 inline-block min-w-[260px] text-left">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Order</p>
+            <p id="failed-order" class="font-mono text-sm text-forest mb-4">—</p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Amount Due</p>
+            <p id="failed-total" class="font-display text-xl font-semibold text-forest">—</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+            <button
+                type="button"
+                id="payment-retry-btn"
+                class="inline-flex items-center justify-center px-6 py-3 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+                Try Again
+            </button>
+            <a href="#/track" class="inline-flex items-center justify-center px-6 py-3 border border-forest text-forest text-sm font-medium rounded-md hover:bg-forest hover:text-ivory transition-colors">
+                Track Order
+            </a>
+        </div>
+
+        <p class="text-xs text-stone max-w-xs mx-auto">
+            Your order is saved. If you keep having trouble, call us at
+            <a href="tel:+254710191260" class="text-forest underline">+254 710 191 260</a>.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== FORM + SUMMARY ==================== -->
+<section id="checkout-form-wrap" class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+    <form id="checkout-form" class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8" novalidate>
+
+        <!-- ========== LEFT: FORM ========== -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <div id="checkout-warning" class="hidden" aria-live="polite"></div>
+
+            <!-- ACCOUNT CHOICE -->
+            <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <h2 class="font-display text-xl font-medium text-forest mb-4">How would you like to continue?</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="flex items-start gap-3 p-4 border border-forest bg-forest/5 ring-1 ring-forest rounded-lg cursor-pointer">
+                        <input type="radio" name="checkout-type" value="guest" checked class="mt-1 accent-forest" />
+                        <span>
+                            <span class="block text-sm font-medium text-forest">Continue as Guest</span>
+                            <span class="block text-[11px] text-stone mt-0.5">No account required</span>
+                        </span>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 border border-beige bg-white rounded-lg opacity-60 cursor-not-allowed" title="Accounts arrive in a later phase">
+                        <input type="radio" name="checkout-type" value="account" disabled class="mt-1" />
+                        <span>
+                            <span class="block text-sm font-medium text-forest">Create an Account</span>
+                            <span class="block text-[11px] text-stone mt-0.5">Coming soon</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">1</div>
+                    <h2 class="font-display text-xl font-medium text-forest leading-tight">Contact Details</h2>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="full-name" class="block text-xs font-medium text-forest mb-1.5">Full Name <span class="text-rose">*</span></label>
+                        <input id="full-name" name="fullName" type="text" required autocomplete="name"
+                            placeholder="Jane Wanjiru"
+                            class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors" />
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="phone" class="block text-xs font-medium text-forest mb-1.5">Phone <span class="text-rose">*</span></label>
+                            <input id="phone" name="phone" type="tel" required autocomplete="tel"
+                                placeholder="0712 345 678"
+                                pattern="^(\+?254|0)\s?[17]\d{2}\s?\d{3}\s?\d{3}$"
+                                title="Enter a valid Kenyan mobile number (e.g. 0712 345 678)"
+                                class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors" />
+                            <p class="text-[11px] text-stone mt-1">We'll call this number to confirm.</p>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-medium text-forest mb-1.5">Email <span class="text-rose">*</span></label>
+                            <input id="email" name="email" type="email" required autocomplete="email"
+                                placeholder="jane@example.com"
+                                class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELIVERY -->
+            <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">2</div>
+                    <h2 class="font-display text-xl font-medium text-forest leading-tight">Delivery Details</h2>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label for="address" class="block text-xs font-medium text-forest mb-1.5">Delivery Address <span class="text-rose">*</span></label>
+                        <textarea id="address" name="address" required rows="3"
+                            placeholder="Apartment / building, street, area, landmarks"
+                            class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-forest mb-2">Delivery Zone <span class="text-rose">*</span></label>
+                        <div id="zone-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Filled by checkout.js -->
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="delivery-date" class="block text-xs font-medium text-forest mb-1.5">Delivery Date <span class="text-rose">*</span></label>
+                            <input id="delivery-date" name="deliveryDate" type="date" required
+                                class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors" />
+                        </div>
+                        <div>
+                            <label for="delivery-time" class="block text-xs font-medium text-forest mb-1.5">Preferred Time <span class="text-rose">*</span></label>
+                            <select id="delivery-time" name="deliveryTime" required
+                                class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                                <option value="">Select a time slot</option>
+                                <option>8:00 AM – 10:00 AM</option>
+                                <option>10:00 AM – 12:00 PM</option>
+                                <option>12:00 PM – 2:00 PM</option>
+                                <option>2:00 PM – 4:00 PM</option>
+                                <option>4:00 PM – 6:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GIFT MESSAGE -->
+            <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-7 h-7 rounded-full bg-forest text-ivory flex items-center justify-center text-xs font-semibold flex-shrink-0">3</div>
+                    <div>
+                        <h2 class="font-display text-xl font-medium text-forest leading-tight">Gift Message</h2>
+                        <p class="text-stone text-xs mt-0.5">Optional · handwritten on a card</p>
+                    </div>
+                </div>
+                <textarea id="gift-message" name="giftMessage" rows="3" maxlength="200"
+                    placeholder="Happy Birthday, Sarah — wishing you a day as beautiful as you are…"
+                    class="w-full px-4 py-3 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors resize-none font-light"></textarea>
+                <p class="text-right text-[11px] text-stone mt-2">
+                    <span id="checkout-char-count">0</span> / 200
+                </p>
+            </div>
+        </div>
+
+        <!-- ========== RIGHT: SUMMARY ========== -->
+        <aside class="lg:col-span-1">
+            <div class="lg:sticky lg:top-24 bg-cream/70 border border-beige/60 rounded-2xl p-5">
+                <h2 class="font-display text-xl font-medium text-forest mb-4">Order Summary</h2>
+
+                <div id="free-delivery-banner" class="hidden"></div>
+
+                <div id="checkout-summary-items" class="pb-3 mb-4 border-b border-beige"></div>
+
+                <div class="space-y-2 pb-4 mb-4 border-b border-beige">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-stone">Subtotal</span>
+                        <span id="checkout-subtotal" class="text-forest font-medium">KES 0</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-stone">Delivery</span>
+                        <span id="checkout-delivery" class="text-forest font-medium">KES 0</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-5">
+                    <span class="text-sm font-medium text-forest">Total</span>
+                    <span id="checkout-total" class="font-display text-2xl font-semibold text-forest">KES 0</span>
+                </div>
+
+                <button
+                    type="submit"
+                    id="place-order-btn"
+                    class="w-full py-3.5 bg-forest text-ivory font-medium text-sm rounded-md hover:bg-forest-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                    Place Order
+                </button>
+                <p class="text-[11px] text-stone text-center mt-3">
+                    You'll receive a call to confirm before delivery.
+                </p>
+            </div>
+        </aside>
+    </form>
+</section>

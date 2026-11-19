@@ -1,0 +1,120 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+                <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-2">Export Division</p>
+                <h1 class="font-display text-2xl sm:text-3xl font-medium text-forest mb-2">Stem Catalogue</h1>
+                <p class="text-stone text-sm font-light">
+                    Prices are FOB Nairobi, per stem, in USD. Minimum 100 stems per SKU · 1,000 stems per order.
+                </p>
+            </div>
+            <a href="#/wholesale/cart" class="inline-flex items-center gap-2 px-4 py-2.5 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors flex-shrink-0">
+                View Order
+                <span data-wholesale-cart-count class="bg-sage text-forest text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FILTERS ==================== -->
+<section class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 pt-6">
+    <div class="bg-white border border-beige/60 rounded-xl p-4 sm:p-5 shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div class="md:col-span-4">
+                <label for="w-search" class="sr-only">Search</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-stone">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                    </span>
+                    <input id="w-search" type="text" placeholder="Search variety, colour, SKU…"
+                        class="w-full pl-9 pr-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/60 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors" />
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="w-category" class="sr-only">Grade</label>
+                <select id="w-category" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="all">All Grades</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2">
+                <label for="w-colour" class="sr-only">Colour</label>
+                <select id="w-colour" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="all">All Colours</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2">
+                <label for="w-length" class="sr-only">Length</label>
+                <select id="w-length" class="w-full px-3 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors">
+                    <option value="all">All Lengths</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-1 flex">
+                <button id="w-clear" type="button" class="w-full md:w-auto md:h-full px-3 py-2.5 text-xs font-medium text-stone border border-beige rounded-md hover:bg-cream hover:text-forest transition-colors" title="Clear filters">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-beige/60 flex-wrap gap-3">
+            <p id="w-count" class="text-xs text-stone">Loading…</p>
+            <label class="flex items-center gap-2 text-xs text-stone">
+                <span>Sort</span>
+                <select id="w-sort" class="px-2 py-1 bg-ivory border border-beige rounded text-xs text-charcoal focus:outline-none focus:border-sage">
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="variety">Variety (A–Z)</option>
+                    <option value="length-asc">Length: Short to Long</option>
+                    <option value="length-desc">Length: Long to Short</option>
+                </select>
+            </label>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== TABLE ==================== -->
+<section class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-6 sm:py-8">
+    <div class="bg-white border border-beige/60 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-cream/60 text-[11px] uppercase tracking-wider text-stone">
+                    <tr>
+                        <th class="text-left px-4 py-3 font-medium">Variety</th>
+                        <th class="text-left px-4 py-3 font-medium hidden md:table-cell">Colour</th>
+                        <th class="text-left px-4 py-3 font-medium hidden lg:table-cell">Grade</th>
+                        <th class="text-right px-4 py-3 font-medium">Length</th>
+                        <th class="text-right px-4 py-3 font-medium">Price / stem</th>
+                        <th class="text-right px-4 py-3 font-medium hidden sm:table-cell">SKU min</th>
+                        <th class="text-right px-4 py-3 font-medium">Qty (stems)</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody id="w-tbody" class="divide-y divide-beige/60"></tbody>
+            </table>
+        </div>
+
+        <div id="w-empty" class="hidden px-6 py-16 text-center">
+            <p class="font-display text-lg text-forest mb-1">No stems match your filters</p>
+            <p class="text-stone text-sm">Try widening your search.</p>
+        </div>
+
+        <div class="px-4 py-4 border-t border-beige/60 flex justify-center">
+            <button id="w-load-more" type="button" class="hidden px-5 py-2.5 border border-beige text-xs font-medium text-stone rounded-md hover:bg-cream hover:text-forest transition-colors">
+                Load more
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== FOOTNOTE ==================== -->
+<section class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 pb-16">
+    <p class="text-xs text-stone leading-relaxed max-w-3xl mx-auto text-center">
+        All prices are FOB Nairobi in USD, exclusive of freight, phytosanitary certificates, and export documentation.
+        Volume discounts of 5% / 10% / 15% apply at 5,000 / 20,000 / 50,000 total stems per order.
+        Contact us for orders above 50,000 stems.
+    </p>
+</section>

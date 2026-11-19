@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* Fallback: allow hover: and group-hover: to also match .hover-active,
+   which our JS adds on mouseenter for environments where the browser
+   refuses to fire native :hover. */
+@custom-variant hover (&:hover, &.hover-active);
+@custom-variant group-hover (.group:hover &, .group.hover-active &);
+
+@source "../index.html";
+@source "./views/**/*.html";
+@source "./js/**/*.js";

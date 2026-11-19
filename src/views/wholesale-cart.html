@@ -1,0 +1,135 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+                <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-2">Export Division</p>
+                <h1 class="font-display text-2xl sm:text-3xl font-medium text-forest">Your Order</h1>
+                <p class="text-stone text-sm font-light mt-1">Minimum 1,000 stems · prices in USD · FOB Nairobi</p>
+            </div>
+            <a href="#/wholesale/catalogue" class="inline-flex items-center gap-2 px-4 py-2.5 border border-forest text-forest text-sm font-medium rounded-md hover:bg-forest hover:text-ivory transition-colors flex-shrink-0">
+                ← Continue shopping
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== EMPTY STATE ==================== -->
+<section id="wc-empty" class="hidden">
+    <div class="max-w-md mx-auto text-center px-5 py-24">
+        <div class="w-20 h-20 rounded-full bg-cream flex items-center justify-center mx-auto mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-sage">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+        </div>
+        <h2 class="font-display text-2xl font-medium text-forest mb-2">Your order is empty</h2>
+        <p class="text-stone text-sm mb-7 max-w-xs mx-auto">
+            Add stems from the catalogue to build your export order.
+        </p>
+        <a href="#/wholesale/catalogue" class="inline-flex items-center justify-center px-6 py-3 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors">
+            Browse Catalogue
+        </a>
+    </div>
+</section>
+
+<!-- ==================== CONTENT ==================== -->
+<section id="wc-content" class="hidden">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+            <!-- ========== LEFT: LINE ITEMS ========== -->
+            <div class="lg:col-span-2">
+                <div class="bg-white border border-beige/60 rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-cream/50 text-[11px] uppercase tracking-wider text-stone">
+                                <tr>
+                                    <th class="text-left px-4 py-3 font-medium">Variety</th>
+                                    <th class="text-right px-4 py-3 font-medium hidden sm:table-cell">Length</th>
+                                    <th class="text-right px-4 py-3 font-medium hidden md:table-cell">Unit price</th>
+                                    <th class="text-right px-4 py-3 font-medium">Qty (stems)</th>
+                                    <th class="text-right px-4 py-3 font-medium">Line total</th>
+                                    <th class="px-4 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="wc-tbody" class="divide-y divide-beige/60"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-4 py-3 border-t border-beige/60 bg-cream/30 flex items-center justify-between flex-wrap gap-2">
+                        <p class="text-xs text-stone">Quantities are in multiples of 100 stems.</p>
+                        <button type="button" id="wc-clear-cart" class="text-xs font-medium text-stone hover:text-rose transition-colors">
+                            Clear order
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== RIGHT: SUMMARY ========== -->
+            <aside class="lg:col-span-1">
+                <div class="lg:sticky lg:top-24 space-y-4">
+
+                    <!-- Minimum order progress -->
+                    <div class="bg-white border border-beige/60 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium uppercase tracking-wider text-forest">Order minimum</span>
+                            <span id="wc-min-status" class="text-xs font-medium">—</span>
+                        </div>
+                        <p class="font-display text-2xl font-semibold text-forest mb-3">
+                            <span id="wc-total-stems">0</span>
+                            <span class="text-base text-stone font-normal">/ 1,000 stems</span>
+                        </p>
+                        <div class="h-1.5 rounded-full bg-beige overflow-hidden mb-2">
+                            <div id="wc-min-bar" class="h-full bg-sage transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p id="wc-min-hint" class="text-xs text-stone"></p>
+                    </div>
+
+                    <!-- Discount tier progress -->
+                    <div class="bg-white border border-beige/60 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium uppercase tracking-wider text-forest">Volume discount</span>
+                            <span id="wc-discount-pill" class="text-xs font-medium">—</span>
+                        </div>
+                        <p class="font-display text-2xl font-semibold text-forest mb-3">
+                            <span id="wc-discount-rate">0%</span>
+                        </p>
+                        <div class="h-1.5 rounded-full bg-beige overflow-hidden mb-2">
+                            <div id="wc-discount-bar" class="h-full bg-sage transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p id="wc-discount-hint" class="text-xs text-stone"></p>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="bg-cream/70 border border-beige/60 rounded-2xl p-5">
+                        <div class="space-y-2 pb-4 mb-4 border-b border-beige">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-stone">Subtotal</span>
+                                <span id="wc-subtotal" class="text-forest font-medium">$0.00</span>
+                            </div>
+                            <div id="wc-discount-row" class="flex items-center justify-between text-sm hidden">
+                                <span class="text-stone">Volume discount (<span id="wc-discount-pct">0%</span>)</span>
+                                <span id="wc-discount-amount" class="text-sage-dark font-medium">−$0.00</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-5">
+                            <span class="text-sm font-medium text-forest">Order total</span>
+                            <span id="wc-total" class="font-display text-2xl font-semibold text-forest">$0.00</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="wc-checkout-btn"
+                            class="w-full py-3.5 bg-forest text-ivory font-medium text-sm rounded-md hover:bg-forest-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                            Proceed to Checkout
+                        </button>
+                        <p id="wc-checkout-hint" class="text-[11px] text-stone text-center mt-3"></p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,190 @@
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-cream border-b border-beige/60">
+    <div class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-14 text-center">
+        <p class="text-sage uppercase tracking-[0.3em] text-xs font-medium mb-3">Where Are My Flowers?</p>
+        <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-forest mb-3">
+            Track Your Order
+        </h1>
+        <p class="text-stone max-w-md mx-auto text-sm sm:text-base font-light">
+            Enter your order number and the phone number you used at checkout.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== LOOKUP FORM ==================== -->
+<section id="track-form-wrap" class="max-w-container mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+    <form id="track-form" class="max-w-lg mx-auto bg-white border border-beige/60 rounded-2xl p-6 sm:p-7 shadow-sm" novalidate>
+        <div class="space-y-4">
+            <div>
+                <label for="track-order-number" class="block text-xs font-medium text-forest mb-1.5">
+                    Order Number <span class="text-rose">*</span>
+                </label>
+                <input
+                    id="track-order-number"
+                    name="orderNumber"
+                    type="text"
+                    required
+                    autocomplete="off"
+                    placeholder="PCB-20250920-123456"
+                    class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors font-mono tracking-tight"
+                />
+                <p class="text-[11px] text-stone mt-1">Found on your confirmation screen or in our SMS.</p>
+            </div>
+            <div>
+                <label for="track-phone" class="block text-xs font-medium text-forest mb-1.5">
+                    Phone Number <span class="text-rose">*</span>
+                </label>
+                <input
+                    id="track-phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    autocomplete="tel"
+                    placeholder="0712 345 678"
+                    class="w-full px-4 py-2.5 bg-ivory border border-beige rounded-md text-sm text-charcoal placeholder:text-stone/50 focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage transition-colors"
+                />
+                <p class="text-[11px] text-stone mt-1">The number you gave us at checkout.</p>
+            </div>
+        </div>
+
+        <button
+            type="submit"
+            id="track-submit"
+            class="w-full mt-6 py-3 bg-forest text-ivory font-medium text-sm rounded-md hover:bg-forest-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+            Find My Order
+        </button>
+
+        <p id="track-error" class="hidden mt-4 text-xs text-rose-dark text-center"></p>
+    </form>
+</section>
+
+<!-- ==================== LOADING ==================== -->
+<section id="track-loading" class="hidden">
+    <div class="max-w-lg mx-auto text-center px-5 py-20">
+        <div class="inline-block w-8 h-8 border-3 border-beige border-t-sage rounded-full animate-spin"></div>
+        <p class="text-stone text-sm mt-4">Looking up your order…</p>
+    </div>
+</section>
+
+<!-- ==================== RESULTS ==================== -->
+<section id="track-results" class="hidden">
+    <div class="max-w-3xl mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+
+        <!-- Header card -->
+        <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6 mb-6">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-stone mb-1">Order</p>
+                    <p id="result-order-number" class="font-display text-xl font-semibold text-forest font-mono tracking-tight">—</p>
+                </div>
+                <div id="result-status-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium">
+                    — 
+                </div>
+            </div>
+            <div class="mt-5 pt-5 border-t border-beige/60 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Placed</p>
+                    <p id="result-created-at" class="text-sm text-forest font-medium">—</p>
+                </div>
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Total</p>
+                    <p id="result-total" class="text-sm text-forest font-medium">—</p>
+                </div>
+                <div>
+                    <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Payment</p>
+                    <p id="result-payment" class="text-sm text-forest font-medium">—</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancelled notice -->
+        <div id="result-cancelled" class="hidden bg-rose/10 border border-rose/40 rounded-2xl p-5 sm:p-6 mb-6 flex items-start gap-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-dark flex-shrink-0 mt-0.5">
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <div>
+                <p class="text-sm font-medium text-rose-dark mb-0.5">This order was cancelled</p>
+                <p class="text-xs text-stone">If this was unexpected, please call us at +254 700 000 000.</p>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div id="result-timeline-wrap" class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6 mb-6">
+            <h2 class="font-display text-lg font-medium text-forest mb-5">Progress</h2>
+            <ol id="result-timeline" class="relative border-l-2 border-beige ml-2.5"></ol>
+        </div>
+
+        <!-- Delivery details -->
+        <div id="result-delivery-wrap" class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6 mb-6">
+            <h2 class="font-display text-lg font-medium text-forest mb-4">Delivery</h2>
+            <div class="space-y-3 text-sm">
+                <div class="flex items-start gap-3">
+                    <span class="text-sage mt-0.5 flex-shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Address</p>
+                        <p id="result-address" class="text-forest">—</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-sage mt-0.5 flex-shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Scheduled for</p>
+                        <p id="result-schedule" class="text-forest">—</p>
+                    </div>
+                </div>
+                <div id="result-courier-row" class="flex items-start gap-3 hidden">
+                    <span class="text-sage mt-0.5 flex-shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[11px] uppercase tracking-wider text-stone mb-0.5">Courier</p>
+                        <p id="result-courier" class="text-forest">—</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items -->
+        <div class="bg-white border border-beige/60 rounded-2xl p-5 sm:p-6 mb-6">
+            <h2 class="font-display text-lg font-medium text-forest mb-4">Items</h2>
+            <div id="result-items" class="divide-y divide-beige/60"></div>
+
+            <div class="mt-5 pt-5 border-t border-beige space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-stone">Subtotal</span>
+                    <span id="result-subtotal" class="text-forest font-medium">—</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-stone">Delivery</span>
+                    <span id="result-delivery" class="text-forest font-medium">—</span>
+                </div>
+                <div class="flex justify-between text-base pt-2 border-t border-beige/60">
+                    <span class="font-medium text-forest">Total</span>
+                    <span id="result-grand-total" class="font-display font-semibold text-forest">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+                type="button"
+                id="track-again-btn"
+                class="inline-flex items-center justify-center px-6 py-3 border border-forest text-forest text-sm font-medium rounded-md hover:bg-forest hover:text-ivory transition-colors"
+            >
+                Track Another Order
+            </button>
+            <a
+                href="#/shop"
+                class="inline-flex items-center justify-center px-6 py-3 bg-forest text-ivory text-sm font-medium rounded-md hover:bg-forest-light transition-colors"
+            >
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</section>
